@@ -3,9 +3,12 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app/app.module';
 import { HttpExceptionFilter } from './commons/exceptions/filters/http.exception.filter';
 
+import { ValidationPipe } from '@nestjs/common';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
 
   const configSwagger = new DocumentBuilder()

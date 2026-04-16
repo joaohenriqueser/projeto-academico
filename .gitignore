@@ -1,0 +1,6 @@
+node_modules/
+dist/
+dist-tsc/
+build/
+.env
+.DS_Store

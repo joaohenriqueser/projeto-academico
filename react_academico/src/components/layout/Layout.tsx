@@ -16,9 +16,6 @@ export default function Layout() {
             <b>Sistema Acadêmico</b>
           </div>
           <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
-            <Link to="/sistema/usuario/criar" style={{ color: '#4a148c', textDecoration: 'none', fontWeight: 'bold' }}>
-              Novo Usuário
-            </Link>
             <span className="username">
               <b>{localStorage.getItem("usuarioLogado") || "Francisco"}</b>
             </span>

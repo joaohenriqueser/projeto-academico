@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+import { FaPlus } from "react-icons/fa";
 
 interface Usuario {
   idUsuario: number;
@@ -34,7 +36,15 @@ const ListarUsuario = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h2>Lista de Usuários</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>Lista de Usuários</h2>
+        <Link to="/sistema/usuario/criar" className="btn btn-add">
+          <span className="btn-icon">
+            <i><FaPlus /></i>
+          </span>
+          Novo
+        </Link>
+      </div>
       <table style={{ width: "100%", borderCollapse: "collapse", marginTop: "20px" }}>
         <thead>
           <tr>

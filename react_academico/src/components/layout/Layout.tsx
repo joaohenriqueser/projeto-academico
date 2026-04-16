@@ -9,16 +9,18 @@ export default function Layout() {
         <Link to="/sistema/dashboard">Dashboard</Link>
         <Link to="/sistema/cidade/listar">Cidade</Link>
         <Link to="/sistema/usuario/listar">Usuários</Link>
-        <Link to="/sistema/usuario/criar">Cadastrar Usuário</Link>
       </aside>
       <div className="content">
         <header>
           <div className="system-title">
             <b>Sistema Acadêmico</b>
           </div>
-          <div className="user-info">
+          <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <Link to="/sistema/usuario/criar" style={{ color: '#4a148c', textDecoration: 'none', fontWeight: 'bold' }}>
+              Novo Usuário
+            </Link>
             <span className="username">
-              <b>Francisco</b>
+              <b>{localStorage.getItem("usuarioLogado") || "Francisco"}</b>
             </span>
             <a href="#" className="btn btn-logout">
               Logout

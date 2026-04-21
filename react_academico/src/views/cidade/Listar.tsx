@@ -21,7 +21,7 @@ export default function ListarCidade() {
   // useState = hook - gancho - função
   // reagir as alterações na variável
   // renderiza -
-  const [models, setModels] = useState([]);
+  const [models, setModels] = useState<Cidade[]>([]);
   // estados da paginação;
   // page = currentPage
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -37,7 +37,7 @@ export default function ListarCidade() {
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const buscarTodasCidades = useCallback(
-    async (params: SearchParams): Promise<Cidade[] | null> => {
+    async (params: SearchParams): Promise<any> => {
       try {
         const response = await apiGetCidades(params);
         return response.data;

@@ -17,7 +17,7 @@ export default function Layout() {
           </div>
           <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <span className="username">
-              <b>{localStorage.getItem("usuarioLogado") || "Francisco"}</b>
+              <b>João</b>
             </span>
             <a href="#" className="btn btn-logout">
               Logout

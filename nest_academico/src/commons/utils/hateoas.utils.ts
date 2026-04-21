@@ -54,5 +54,39 @@ export function geraPageLinks(
   const host = req.get('host');
   const baseUrl = `${protocol}://${host}/${ROTA_SISTEMA}/${entity.toLowerCase()}`;
 
-  return null;
+  const pageSize = page.pageSize;
+  const currentPage = page.page;
+  const totalPages = page.totalPages;
+
+  if (totalPages <= 1) {
+    return null;
+  }
+
+  const pageLinks: Record<string, Link> = {};
+
+  pageLinks.first = {
+    href: `${baseUrl}/listar?page=1&pageSize=${pageSize}`,
+    method: 'GET',
+  };
+
+  if (currentPage > 1) {
+    pageLinks.prev = {
+      href: `${baseUrl}/listar?page=${currentPage - 1}&pageSize=${pageSize}`,
+      method: 'GET',
+    };
+  }
+
+  if (currentPage < totalPages) {
+    pageLinks.next = {
+      href: `${baseUrl}/listar?page=${currentPage + 1}&pageSize=${pageSize}`,
+      method: 'GET',
+    };
+  }
+
+  pageLinks.last = {
+    href: `${baseUrl}/listar?page=${totalPages}&pageSize=${pageSize}`,
+    method: 'GET',
+  };
+
+  return pageLinks;
 }

@@ -15,6 +15,7 @@ import { Page } from '../../commons/pagination/page.sistema';
 import { CIDADE } from '../constants/cidade.constants';
 import { CidadeResponse } from '../dto/response/cidade.response';
 import { CidadeServiceFindAll } from '../service/cidade.service.findall';
+import { gerarLinks, geraPageLinks } from '../../commons/utils/hateoas.utils';
 
 @Controller(ROTA.CIDADE.BASE)
 export class CidadeControllerFindAll {
@@ -31,6 +32,7 @@ export class CidadeControllerFindAll {
     @Query('order') order?: 'ASC' | 'DESC',
     @Query('searchTerm') search?: string,
   ): Promise<Result<Page<CidadeResponse>>> {
+    const _link = gerarLinks(req, CIDADE.ENTITY);
     const response = await this.cidadeServiceFindAll.findAll(
       page ? Number(page) : PAGINATION.PAGE,
       pageSize ? Number(pageSize) : PAGINATION.PAGESIZE,
@@ -38,13 +40,18 @@ export class CidadeControllerFindAll {
       order ? order : PAGINATION.ASC,
       search,
     );
+    
+    const _pageLinks = geraPageLinks(req, response, CIDADE.ENTITY);
+    if (_pageLinks) Object.assign(_link, _pageLinks);
+
     return MensagemSistema.showMensagem(
       HttpStatus.OK,
       'Lista de cidade gerada com sucesso!',
       response,
       req.path,
       null,
-      null,
+      _link,
     );
   }
 }
+

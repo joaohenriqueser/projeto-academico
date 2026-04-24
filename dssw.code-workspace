@@ -80,7 +80,7 @@
     },
 
     "typescript.updateImportsOnFileMove.enabled": "always",
-    "files.autoSave": "afterDelay",
+    "files.autoSave": "off",
     "editor.stickyScroll.enabled": false,
 
     "[typescriptreact]": {

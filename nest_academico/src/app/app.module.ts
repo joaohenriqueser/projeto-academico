@@ -4,6 +4,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 import { CidadeModule } from '../cidade/cidade.module';
 import { UsuarioModule } from '../usuario/usuario.module';
+import { ProfessorModule } from '../professor/professor.module';
+import { AlunoModule } from '../aluno/aluno.module';
+import { DisciplinaModule } from '../disciplina/disciplina.module';
+import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
+import { ResourcesController } from './app.resources.controller';
 
 @Module({
   imports: [
@@ -37,6 +42,11 @@ import { UsuarioModule } from '../usuario/usuario.module';
     }),
     CidadeModule,
     UsuarioModule,
+    ProfessorModule,
+    AlunoModule,
+    DisciplinaModule,
+    AvaliacaoModule,
   ],
+  controllers: [ResourcesController],
 })
 export class AppModule {}

@@ -198,7 +198,7 @@ export const useAlterar = () => {
     return "form-control app-label mt-2";
   };
 
-  const onSubmitForm = async (e: React.FormEvent) => {
+  const onSubmitForm = async (e: React.FormEvent, url: string) => {
     // não deixa executar o processo normal
     e.preventDefault();
 
@@ -212,7 +212,7 @@ export const useAlterar = () => {
     }
 
     try {
-      const response = apiPutCidade(idCidade, model);
+      const response = apiPutCidade(idCidade, model, url);
       console.log(response);
       navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {

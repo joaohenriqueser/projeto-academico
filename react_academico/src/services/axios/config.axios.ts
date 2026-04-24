@@ -2,7 +2,7 @@ import axios from "axios";
 import { REST_CONFIG } from "../constant/sistema.constants";
 
 export const http = axios.create({
-  baseURL: REST_CONFIG.BASE_URL,
+  baseURL: REST_CONFIG.BASE_URL.replace(/\/$/, ""),
   timeout: 15000,
   headers: {
     "Content-type": "application/json",

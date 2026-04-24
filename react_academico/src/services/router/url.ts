@@ -1,5 +1,4 @@
 import { CIDADE } from "../cidade/constants/cidade.constants";
-import { USUARIO } from "../../views/usuario/constants/usuario.constants";
 
 const ROTA_SISTEMA = "sistema";
 export const DASHBOARD = `/${ROTA_SISTEMA}/dashboard`;
@@ -23,5 +22,9 @@ function gerarRotaSistema(entity: string) {
 
 export const ROTA = {
   CIDADE: gerarRotaSistema(CIDADE.ALIAS),
-  USUARIO: gerarRotaSistema(USUARIO.ALIAS),
+  ALUNO: gerarRotaSistema("aluno"),
+  DISCIPLINA: gerarRotaSistema("disciplina"),
+  PROFESSOR: gerarRotaSistema("professor"),
+  USUARIO: gerarRotaSistema("usuario"),
+  AVALIACAO: gerarRotaSistema("avaliacao"),
 };

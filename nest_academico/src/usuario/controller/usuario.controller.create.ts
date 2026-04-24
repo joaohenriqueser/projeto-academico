@@ -18,7 +18,6 @@ export class UsuarioControllerCreate {
 
   @HttpCode(HttpStatus.CREATED)
   @Post(ROTA.USUARIO.CREATE)
-  @ApiPostDoc(USUARIO.OPERACAO.CRIAR, UsuarioRequest, UsuarioResponse)
   async create(@Req() req: Request, @Body() usuarioRequest: UsuarioRequest): Promise<Result<UsuarioResponse>> {
     const _link = gerarLinks(req, USUARIO.ENTITY);
 

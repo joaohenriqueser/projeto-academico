@@ -1,7 +1,7 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { BaseEntity } from '../../commons/entity/base.entity';
 
-@Entity('Cidade')
+@Entity('cidade')
 export class Cidade extends BaseEntity {
   @PrimaryGeneratedColumn('increment', {
     name: 'ID_CIDADE',

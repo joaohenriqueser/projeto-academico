@@ -1,36 +1,27 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty, IsString, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class UsuarioRequest {
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
-  firstName!: string;
+  @IsOptional()
+  codUsuario?: string;
 
-  @ApiProperty()
-  @IsNotEmpty()
   @IsString()
-  lastName!: string;
-
-  @ApiProperty()
   @IsNotEmpty()
+  firstName: string = '';
+
   @IsString()
-  username!: string;
-
-  @ApiProperty()
   @IsNotEmpty()
+  lastName: string = '';
+
+  @IsString()
+  @IsNotEmpty()
+  username: string = '';
+
+  @IsString()
+  @IsNotEmpty()
+  password: string = '';
+
   @IsEmail()
-  email!: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(8)
-  @IsString()
-  password!: string;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(8)
-  @IsString()
-  confirmPassword!: string;
+  @IsOptional()
+  email?: string;
 }

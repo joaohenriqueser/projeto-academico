@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { Pageable } from '../../commons/pagination/page.response';
 import { Page } from '../../commons/pagination/page.sistema';
 import { CIDADE, fieldsCidade } from '../constants/cidade.constants';
@@ -24,19 +24,12 @@ export class CidadeServiceFindAll {
   ): Promise<Page<CidadeResponse>> {
     const pageable = new Pageable(page, pageSize, props, order, fieldsCidade);
 
-    const query = this.cidadeRepository
-      .createQueryBuilder(CIDADE.ENTITY)
-      .orderBy(props, order)
-      .offset(pageable.offset)
-      .limit(pageable.limit);
-
-    if (search) {
-      query.where(`${props} LIKE :search_where`, {
-        search_where: `%${search}%`,
-      });
-    }
-
-    const [listaCidades, totalElements] = await query.getManyAndCount();
+    const [listaCidades, totalElements] = await this.cidadeRepository.findAndCount({
+      where: search ? { nomeCidade: Like(`%${search}%`) } : {},
+      order: { [pageable.props]: order } as any,
+      skip: pageable.offset,
+      take: pageable.limit,
+    });
 
     const cidades = ConverterCidade.toListCidadeResponse(listaCidades);
 

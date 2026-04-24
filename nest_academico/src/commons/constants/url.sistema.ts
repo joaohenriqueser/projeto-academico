@@ -1,6 +1,6 @@
-import { ALUNO, CIDADE, PROFESSOR, USUARIO } from './constants.sistema';
+import { ALUNO, CIDADE, PROFESSOR, USUARIO, DISCIPLINA, AVALIACAO, ROLE, RECURSO, PERMISSION } from './constants.sistema';
 
-export const SERVIDOR = 'http://localhost:8000';
+export const SERVIDOR = 'http://localhost:5000';
 export const CLINTE = 'http://localhost:3000';
 
 export const ROTA_SISTEMA = 'rest/sistema';
@@ -29,8 +29,9 @@ export const ROTA = {
   PROFESSOR: gerarRotasSistema(PROFESSOR),
   CIDADE: gerarRotasSistema(CIDADE),
   ALUNO: gerarRotasSistema(ALUNO),
+  DISCIPLINA: gerarRotasSistema(DISCIPLINA),
+  AVALIACAO: gerarRotasSistema(AVALIACAO),
+  ROLE: gerarRotasSistema(ROLE),
+  RECURSO: gerarRotasSistema(RECURSO),
+  PERMISSION: gerarRotasSistema(PERMISSION),
 };
-
-//criar rotas de forma dinâmica para os endpoints
-//recurso, URLs, URI....
-// concatenar = '/rest/sistema/cidade/buscar/:id'

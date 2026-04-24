@@ -10,29 +10,37 @@ export interface SearchParams {
   search?: string;
 }
 
-export const apiGetCidades = async (params: SearchParams) => {
-  const response = await http.get(`/rest${ROTA.CIDADE.LISTAR}`, {
+export const apiGetCidades = async (params: SearchParams, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.CIDADE.LISTAR}`;
+  const response = await http.get(endpoint, {
     params,
   });
   return response;
 };
 
-export const apiGetCidade = async (idCidade: string) => {
-  const response = await http.get(`/rest${ROTA.CIDADE.POR_ID}/${idCidade}`);
+export const apiGetCidade = async (idCidade: string, url?: string) => {
+  const endpoint = url ? `${url}/${idCidade}` : `/rest${ROTA.CIDADE.POR_ID}/${idCidade}`;
+  const response = await http.get(endpoint);
   return response;
 };
 
-export const apiPostCidade = async (cidade: Cidade) => {
-  const response = await http.post(`/rest${ROTA.CIDADE.CRIAR}`, cidade);
+export const apiPostCidade = async (cidade: Cidade, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.CIDADE.CRIAR}`;
+  const response = await http.post(endpoint, cidade);
+  return response;
 };
 
-export const apiPutCidade = async (idCidade: string, cidade: Cidade) => {
+export const apiPutCidade = async (idCidade: string, cidade: Cidade, url?: string) => {
+  const endpoint = url ? `${url}/${idCidade}` : `/rest${ROTA.CIDADE.ATUALIZAR}/${idCidade}`;
   const response = await http.put(
-    `/rest${ROTA.CIDADE.ATUALIZAR}/${idCidade}`,
+    endpoint,
     cidade,
   );
+  return response;
 };
 
-export const apiDeleteCidade = async (idCidade: string) => {
-  const response = await http.delete(`/rest${ROTA.CIDADE.EXCLUIR}/${idCidade}`);
+export const apiDeleteCidade = async (idCidade: string, url?: string) => {
+  const endpoint = url ? `${url}/${idCidade}` : `/rest${ROTA.CIDADE.EXCLUIR}/${idCidade}`;
+  const response = await http.delete(endpoint);
+  return response;
 };

@@ -10,32 +10,37 @@ export interface SearchParams {
   search?: string;
 }
 
-export const apiGetDisciplinas = async (params: SearchParams) => {
-  const response = await http.get(`/rest${ROTA.DISCIPLINA.LISTAR}`, {
+export const apiGetDisciplinas = async (params: SearchParams, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.DISCIPLINA.LISTAR}`;
+  const response = await http.get(endpoint, {
     params,
   });
   return response;
 };
 
-export const apiGetDisciplinaById = async (idDisciplina: number) => {
-  const response = await http.get(`/rest${ROTA.DISCIPLINA.POR_ID}/${idDisciplina}`);
+export const apiGetDisciplinaById = async (idDisciplina: number, url?: string) => {
+  const endpoint = url ? `${url}/${idDisciplina}` : `/rest${ROTA.DISCIPLINA.POR_ID}/${idDisciplina}`;
+  const response = await http.get(endpoint);
   return response;
 };
 
-export const apiCreateDisciplina = async (disciplina: Disciplina) => {
-  const response = await http.post(`/rest${ROTA.DISCIPLINA.CRIAR}`, disciplina);
+export const apiCreateDisciplina = async (disciplina: Disciplina, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.DISCIPLINA.CRIAR}`;
+  const response = await http.post(endpoint, disciplina);
   return response;
 };
 
-export const apiUpdateDisciplina = async (idDisciplina: number, disciplina: Disciplina) => {
+export const apiUpdateDisciplina = async (idDisciplina: number, disciplina: Disciplina, url?: string) => {
+  const endpoint = url ? `${url}/${idDisciplina}` : `/rest${ROTA.DISCIPLINA.ATUALIZAR}/${idDisciplina}`;
   const response = await http.put(
-    `/rest${ROTA.DISCIPLINA.ATUALIZAR}/${idDisciplina}`,
+    endpoint,
     disciplina,
   );
   return response;
 };
 
-export const apiDeleteDisciplina = async (idDisciplina: number) => {
-  const response = await http.delete(`/rest${ROTA.DISCIPLINA.EXCLUIR}/${idDisciplina}`);
+export const apiDeleteDisciplina = async (idDisciplina: number, url?: string) => {
+  const endpoint = url ? `${url}/${idDisciplina}` : `/rest${ROTA.DISCIPLINA.EXCLUIR}/${idDisciplina}`;
+  const response = await http.delete(endpoint);
   return response;
 };

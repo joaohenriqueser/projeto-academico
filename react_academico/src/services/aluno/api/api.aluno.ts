@@ -10,32 +10,37 @@ export interface SearchParams {
   search?: string;
 }
 
-export const apiGetAlunos = async (params: SearchParams) => {
-  const response = await http.get(`/rest${ROTA.ALUNO.LISTAR}`, {
+export const apiGetAlunos = async (params: SearchParams, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.ALUNO.LISTAR}`;
+  const response = await http.get(endpoint, {
     params,
   });
   return response;
 };
 
-export const apiGetAlunoById = async (idAluno: number) => {
-  const response = await http.get(`/rest${ROTA.ALUNO.POR_ID}/${idAluno}`);
+export const apiGetAlunoById = async (idAluno: number, url?: string) => {
+  const endpoint = url ? `${url}/${idAluno}` : `/rest${ROTA.ALUNO.POR_ID}/${idAluno}`;
+  const response = await http.get(endpoint);
   return response;
 };
 
-export const apiCreateAluno = async (aluno: Aluno) => {
-  const response = await http.post(`/rest${ROTA.ALUNO.CRIAR}`, aluno);
+export const apiCreateAluno = async (aluno: Aluno, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.ALUNO.CRIAR}`;
+  const response = await http.post(endpoint, aluno);
   return response;
 };
 
-export const apiUpdateAluno = async (idAluno: number, aluno: Aluno) => {
+export const apiUpdateAluno = async (idAluno: number, aluno: Aluno, url?: string) => {
+  const endpoint = url ? `${url}/${idAluno}` : `/rest${ROTA.ALUNO.ATUALIZAR}/${idAluno}`;
   const response = await http.put(
-    `/rest${ROTA.ALUNO.ATUALIZAR}/${idAluno}`,
+    endpoint,
     aluno,
   );
   return response;
 };
 
-export const apiDeleteAluno = async (idAluno: number) => {
-  const response = await http.delete(`/rest${ROTA.ALUNO.EXCLUIR}/${idAluno}`);
+export const apiDeleteAluno = async (idAluno: number, url?: string) => {
+  const endpoint = url ? `${url}/${idAluno}` : `/rest${ROTA.ALUNO.EXCLUIR}/${idAluno}`;
+  const response = await http.delete(endpoint);
   return response;
 };

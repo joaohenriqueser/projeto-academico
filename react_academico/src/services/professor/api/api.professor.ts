@@ -10,32 +10,37 @@ export interface SearchParams {
   search?: string;
 }
 
-export const apiGetProfessores = async (params: SearchParams) => {
-  const response = await http.get(`/rest${ROTA.PROFESSOR.LISTAR}`, {
+export const apiGetProfessores = async (params: SearchParams, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.PROFESSOR.LISTAR}`;
+  const response = await http.get(endpoint, {
     params,
   });
   return response;
 };
 
-export const apiGetProfessorById = async (idProfessor: number) => {
-  const response = await http.get(`/rest${ROTA.PROFESSOR.POR_ID}/${idProfessor}`);
+export const apiGetProfessorById = async (idProfessor: number, url?: string) => {
+  const endpoint = url ? `${url}/${idProfessor}` : `/rest${ROTA.PROFESSOR.POR_ID}/${idProfessor}`;
+  const response = await http.get(endpoint);
   return response;
 };
 
-export const apiCreateProfessor = async (professor: Professor) => {
-  const response = await http.post(`/rest${ROTA.PROFESSOR.CRIAR}`, professor);
+export const apiCreateProfessor = async (professor: Professor, url?: string) => {
+  const endpoint = url ? url : `/rest${ROTA.PROFESSOR.CRIAR}`;
+  const response = await http.post(endpoint, professor);
   return response;
 };
 
-export const apiUpdateProfessor = async (idProfessor: number, professor: Professor) => {
+export const apiUpdateProfessor = async (idProfessor: number, professor: Professor, url?: string) => {
+  const endpoint = url ? `${url}/${idProfessor}` : `/rest${ROTA.PROFESSOR.ATUALIZAR}/${idProfessor}`;
   const response = await http.put(
-    `/rest${ROTA.PROFESSOR.ATUALIZAR}/${idProfessor}`,
+    endpoint,
     professor,
   );
   return response;
 };
 
-export const apiDeleteProfessor = async (idProfessor: number) => {
-  const response = await http.delete(`/rest${ROTA.PROFESSOR.EXCLUIR}/${idProfessor}`);
+export const apiDeleteProfessor = async (idProfessor: number, url?: string) => {
+  const endpoint = url ? `${url}/${idProfessor}` : `/rest${ROTA.PROFESSOR.EXCLUIR}/${idProfessor}`;
+  const response = await http.delete(endpoint);
   return response;
 };

@@ -9,6 +9,7 @@ import { AlunoModule } from '../aluno/aluno.module';
 import { DisciplinaModule } from '../disciplina/disciplina.module';
 import { AvaliacaoModule } from '../avaliacao/avaliacao.module';
 import { ResourcesController } from './app.resources.controller';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ResourcesController } from './app.resources.controller';
     AlunoModule,
     DisciplinaModule,
     AvaliacaoModule,
+    AuthModule,
   ],
   controllers: [ResourcesController],
 })

@@ -11,9 +11,13 @@ import { AlunoServiceFindOne } from './service/aluno.service.findone';
 import { AlunoServiceList } from './service/aluno.service.list';
 import { AlunoServiceRemove } from './service/aluno.service.remove';
 import { AlunoServiceUpdate } from './service/aluno.service.update';
+import { UsuarioModule } from '../usuario/usuario.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Aluno])],
+  imports: [
+    TypeOrmModule.forFeature([Aluno]),
+    UsuarioModule,
+  ],
   controllers: [
     AlunoControllerCreate,
     AlunoControllerFindAll,

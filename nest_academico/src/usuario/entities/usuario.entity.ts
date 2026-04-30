@@ -28,8 +28,6 @@ export class Usuario extends BaseEntity {
   @OneToMany(() => UsuarioRole, (ur) => ur.usuario)
   usuarioRoles?: UsuarioRole[];
 
-
-
   constructor(data: Partial<Usuario> = {}) {
     super();
     Object.assign(this, data);

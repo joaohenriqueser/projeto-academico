@@ -5,11 +5,12 @@ import { UsuarioControllerCreate } from './controller/usuario.controller.create'
 import { UsuarioServiceCreate } from './service/usuario.service.create';
 import { UsuarioControllerList } from './controller/usuario.controller.list';
 import { UsuarioServiceList } from './service/usuario.service.list';
+import { UsuarioServiceFind } from './service/usuario.service.find';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Usuario])],
   controllers: [UsuarioControllerCreate, UsuarioControllerList],
-  providers: [UsuarioServiceCreate, UsuarioServiceList],
-  exports: [UsuarioServiceCreate, UsuarioServiceList],
+  providers: [UsuarioServiceCreate, UsuarioServiceList, UsuarioServiceFind],
+  exports: [UsuarioServiceCreate, UsuarioServiceList, UsuarioServiceFind],
 })
 export class UsuarioModule {}

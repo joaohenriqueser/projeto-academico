@@ -1,7 +1,17 @@
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import "./layout.css";
+import { useAuth } from "../../contexts/AuthContext";
 
 export default function Layout() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    logout();
+    navigate("/login");
+  };
+
   return (
     <div id="defaultLayout">
       <aside>
@@ -20,9 +30,9 @@ export default function Layout() {
           </div>
           <div className="user-info">
             <span className="username">
-              <b>Francisco</b>
+              <b>{user?.firstName} {user?.lastName}</b>
             </span>
-            <a href="#" className="btn btn-logout">
+            <a href="#" className="btn btn-logout" onClick={handleLogout}>
               Logout
             </a>
           </div>

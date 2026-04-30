@@ -1,6 +1,13 @@
 import type { RouteObject } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import Layout from "../../components/layout/Layout";
 import Dashboard from "../../views/Dashboard";
+
+import Login from "../../views/auth/Login";
+import ForgotPassword from "../../views/auth/ForgotPassword";
+import ResetPassword from "../../views/auth/ResetPassword";
+import VerifyEmail from "../../views/auth/VerifyEmail";
+import PrivateRoute from "../../components/router/PrivateRoute";
 
 import AlterarCidade from "../../views/cidade/Alterar";
 import ConsultarCidade from "../../views/cidade/Consultar";
@@ -39,45 +46,73 @@ import { ROTA } from "./url";
 
 export const routes: RouteObject[] = [
   {
+    path: "/",
+    element: <Navigate to="/login" replace />,
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <CriarUsuario />,
+  },
+  {
+    path: "/forgot-password",
+    element: <ForgotPassword />,
+  },
+  {
+    path: "/reset-password",
+    element: <ResetPassword />,
+  },
+  {
+    path: "/verify-email",
+    element: <VerifyEmail />,
+  },
+  {
     path: "/sistema",
-    element: <Layout />, // componente (pai)
+    element: <PrivateRoute />,
     children: [
       {
-        path: "/sistema/dashboard", //url
-        element: <Dashboard />, //componente a ser carregado (filho)
+        element: <Layout />,
+        children: [
+          {
+            path: "/sistema/dashboard",
+            element: <Dashboard />,
+          },
+          { path: ROTA.CIDADE.LISTAR, element: <ListarCidade /> },
+          { path: ROTA.CIDADE.CRIAR, element: <CriarCidade /> },
+          { path: `${ROTA.CIDADE.ATUALIZAR}/:idCidade`, element: <AlterarCidade /> },
+          { path: `${ROTA.CIDADE.EXCLUIR}/:idCidade`, element: <ExcluirCidade /> },
+          { path: `${ROTA.CIDADE.POR_ID}/:idCidade`, element: <ConsultarCidade /> },
+
+          { path: ROTA.ALUNO.LISTAR, element: <ListarAluno /> },
+          { path: ROTA.ALUNO.CRIAR, element: <CriarAluno /> },
+          { path: `${ROTA.ALUNO.ATUALIZAR}/:idAluno`, element: <AlterarAluno /> },
+          { path: `${ROTA.ALUNO.EXCLUIR}/:idAluno`, element: <ExcluirAluno /> },
+          { path: `${ROTA.ALUNO.POR_ID}/:idAluno`, element: <ConsultarAluno /> },
+
+          { path: ROTA.PROFESSOR.LISTAR, element: <ListarProfessor /> },
+          { path: ROTA.PROFESSOR.CRIAR, element: <CriarProfessor /> },
+          { path: `${ROTA.PROFESSOR.ATUALIZAR}/:idProfessor`, element: <AlterarProfessor /> },
+          { path: `${ROTA.PROFESSOR.EXCLUIR}/:idProfessor`, element: <ExcluirProfessor /> },
+          { path: `${ROTA.PROFESSOR.POR_ID}/:idProfessor`, element: <ConsultarProfessor /> },
+
+          { path: ROTA.DISCIPLINA.LISTAR, element: <ListarDisciplina /> },
+          { path: ROTA.DISCIPLINA.CRIAR, element: <CriarDisciplina /> },
+          { path: `${ROTA.DISCIPLINA.ATUALIZAR}/:idDisciplina`, element: <AlterarDisciplina /> },
+          { path: `${ROTA.DISCIPLINA.EXCLUIR}/:idDisciplina`, element: <ExcluirDisciplina /> },
+          { path: `${ROTA.DISCIPLINA.POR_ID}/:idDisciplina`, element: <ConsultarDisciplina /> },
+
+          { path: ROTA.AVALIACAO.LISTAR, element: <ListarAvaliacao /> },
+          { path: ROTA.AVALIACAO.CRIAR, element: <CriarAvaliacao /> },
+          { path: `${ROTA.AVALIACAO.ATUALIZAR}/:idAvaliacao`, element: <AlterarAvaliacao /> },
+          { path: `${ROTA.AVALIACAO.EXCLUIR}/:idAvaliacao`, element: <ExcluirAvaliacao /> },
+          { path: `${ROTA.AVALIACAO.POR_ID}/:idAvaliacao`, element: <ConsultarAvaliacao /> },
+
+          { path: ROTA.USUARIO.LISTAR, element: <ListarUsuario /> },
+        ],
       },
-      { path: ROTA.CIDADE.LISTAR, element: <ListarCidade /> },
-      { path: ROTA.CIDADE.CRIAR, element: <CriarCidade /> },
-      { path: `${ROTA.CIDADE.ATUALIZAR}/:idCidade`, element: <AlterarCidade /> },
-      { path: `${ROTA.CIDADE.EXCLUIR}/:idCidade`, element: <ExcluirCidade /> },
-      { path: `${ROTA.CIDADE.POR_ID}/:idCidade`, element: <ConsultarCidade /> },
-
-      { path: ROTA.ALUNO.LISTAR, element: <ListarAluno /> },
-      { path: ROTA.ALUNO.CRIAR, element: <CriarAluno /> },
-      { path: `${ROTA.ALUNO.ATUALIZAR}/:idAluno`, element: <AlterarAluno /> },
-      { path: `${ROTA.ALUNO.EXCLUIR}/:idAluno`, element: <ExcluirAluno /> },
-      { path: `${ROTA.ALUNO.POR_ID}/:idAluno`, element: <ConsultarAluno /> },
-
-      { path: ROTA.PROFESSOR.LISTAR, element: <ListarProfessor /> },
-      { path: ROTA.PROFESSOR.CRIAR, element: <CriarProfessor /> },
-      { path: `${ROTA.PROFESSOR.ATUALIZAR}/:idProfessor`, element: <AlterarProfessor /> },
-      { path: `${ROTA.PROFESSOR.EXCLUIR}/:idProfessor`, element: <ExcluirProfessor /> },
-      { path: `${ROTA.PROFESSOR.POR_ID}/:idProfessor`, element: <ConsultarProfessor /> },
-
-      { path: ROTA.DISCIPLINA.LISTAR, element: <ListarDisciplina /> },
-      { path: ROTA.DISCIPLINA.CRIAR, element: <CriarDisciplina /> },
-      { path: `${ROTA.DISCIPLINA.ATUALIZAR}/:idDisciplina`, element: <AlterarDisciplina /> },
-      { path: `${ROTA.DISCIPLINA.EXCLUIR}/:idDisciplina`, element: <ExcluirDisciplina /> },
-      { path: `${ROTA.DISCIPLINA.POR_ID}/:idDisciplina`, element: <ConsultarDisciplina /> },
-
-      { path: ROTA.AVALIACAO.LISTAR, element: <ListarAvaliacao /> },
-      { path: ROTA.AVALIACAO.CRIAR, element: <CriarAvaliacao /> },
-      { path: `${ROTA.AVALIACAO.ATUALIZAR}/:idAvaliacao`, element: <AlterarAvaliacao /> },
-      { path: `${ROTA.AVALIACAO.EXCLUIR}/:idAvaliacao`, element: <ExcluirAvaliacao /> },
-      { path: `${ROTA.AVALIACAO.POR_ID}/:idAvaliacao`, element: <ConsultarAvaliacao /> },
-
-      { path: ROTA.USUARIO.LISTAR, element: <ListarUsuario /> },
-      { path: ROTA.USUARIO.CRIAR, element: <CriarUsuario /> },
     ],
   },
 ];

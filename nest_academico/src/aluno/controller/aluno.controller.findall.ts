@@ -1,4 +1,4 @@
-import { Controller, Get, HttpCode, HttpStatus, Query, Req } from '@nestjs/common';
+import { Controller, Get, HttpCode, HttpStatus, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { ROTA } from '../../commons/constants/url.sistema';
@@ -10,7 +10,6 @@ import { AlunoResponse } from '../dto/response/aluno.response';
 import { AlunoServiceList } from '../service/aluno.service.list';
 import { Page } from '../../commons/pagination/page.sistema';
 import { PAGINATION } from '../../commons/enum/paginacao.enum';
-
 @ApiTags('Aluno')
 @Controller(ROTA.ALUNO.BASE)
 export class AlunoControllerFindAll {

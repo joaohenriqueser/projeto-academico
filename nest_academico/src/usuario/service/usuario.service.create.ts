@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Usuario } from '../entities/usuario.entity';
 import { UsuarioRequest } from '../dto/request/usuario.request';
 import { UsuarioResponse } from '../dto/response/usuario.response';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioServiceCreate {
@@ -37,10 +38,18 @@ export class UsuarioServiceCreate {
     }
 
     try {
-      const newUsuario = this.usuarioRepository.create(request);
+      // Hashing the password
+      const salt = await bcrypt.genSalt();
+      const hashedPassword = await bcrypt.hash(request.password, salt);
+      
+      const newUsuario = this.usuarioRepository.create({
+        ...request,
+        password: hashedPassword,
+      });
+
       const savedUsuario = await this.usuarioRepository.save(newUsuario);
       console.log('Usuário salvo com sucesso no banco:', savedUsuario.idUsuario);
-
+      
       const response = new UsuarioResponse(savedUsuario);
       return response;
     } catch (error) {

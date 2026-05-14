@@ -25,6 +25,18 @@ export class Usuario extends BaseEntity {
   @Column({ name: 'EMAIL', type: 'varchar', length: 100, nullable: true })
   email?: string;
 
+  @Column({ name: 'STATUS_VALIDACAO', type: 'varchar', length: 20, default: 'PENDING' })
+  status: string = 'PENDING';
+
+  @Column({ name: 'ACTIVATION_TOKEN', type: 'varchar', length: 255, nullable: true })
+  activationToken?: string;
+
+  @Column({ name: 'RECOVERY_TOKEN', type: 'varchar', length: 255, nullable: true })
+  recoveryToken?: string;
+
+  @Column({ name: 'TOKEN_EXPIRES', type: 'timestamp', nullable: true })
+  tokenExpires?: Date;
+
   @OneToMany(() => UsuarioRole, (ur) => ur.usuario)
   usuarioRoles?: UsuarioRole[];
 

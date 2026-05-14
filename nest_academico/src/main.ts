@@ -11,6 +11,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
 
+
   const configSwagger = new DocumentBuilder()
     .setTitle('Sistema Acadêmico')
     .setDescription('API para gestão acadêmica')

@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
-import { FiMail, FiLock, FiLogIn } from 'react-icons/fi';
+import { FiMail, FiLock, FiLogIn, FiEye, FiEyeOff } from 'react-icons/fi';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login, isAuthenticated } = useAuth();
   const navigate = useNavigate();
 
@@ -30,7 +31,7 @@ const Login: React.FC = () => {
     try {
       await login(email, password);
       toast.success('Bem-vindo ao sistema!');
-      // A navegação será feita pelo useEffect acima
+      navigate('/sistema/dashboard', { replace: true });
     } catch (error: any) {
       console.error('Erro no login:', error);
       const message = error.response?.data?.message || error.message || 'Erro ao realizar login.';
@@ -67,7 +68,7 @@ const Login: React.FC = () => {
           <div className="input-group">
             <div className="label-wrapper">
               <label htmlFor="password">Senha</label>
-              <Link to="/forgot-password" size="sm" className="forgot-link">
+              <Link to="/forgot-password" className="forgot-link">
                 Esqueceu a senha?
               </Link>
             </div>
@@ -75,12 +76,20 @@ const Login: React.FC = () => {
               <FiLock className="input-icon" />
               <input
                 id="password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
               />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? <FiEyeOff /> : <FiEye />}
+              </button>
             </div>
           </div>
 
@@ -166,6 +175,31 @@ const Login: React.FC = () => {
         input:focus {
           border-color: #667eea;
           outline: none;
+        }
+        input::-ms-reveal,
+        input::-ms-clear {
+          display: none;
+        }
+        .password-toggle {
+          position: absolute;
+          right: 12px;
+          background: none;
+          border: none;
+          color: #888;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          font-size: 18px;
+          transition: color 0.2s;
+        }
+        .password-toggle:hover {
+          color: #667eea;
+        }
+        input[type="password"], 
+        input[type="text"] {
+          padding-right: 40px;
         }
         .forgot-link {
           font-size: 12px;

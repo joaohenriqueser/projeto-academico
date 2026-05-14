@@ -45,8 +45,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const response = await http.post('/rest/auth/login', { email, password });
+    console.log("Login response:", response.data);
     const data = response.data.data || response.data;
-    const { access_token, user: userData } = data;
+    const access_token = data.access_token || response.data.access_token;
+    const userData = data.user || response.data.user;
 
     localStorage.setItem('@App:token', access_token);
     localStorage.setItem('@App:user', JSON.stringify(userData));

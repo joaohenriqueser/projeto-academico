@@ -26,4 +26,12 @@ export class UsuarioServiceFind {
   async save(usuario: Usuario): Promise<Usuario> {
     return this.usuarioRepository.save(usuario);
   }
+
+  async findByActivationToken(token: string): Promise<Usuario | null> {
+    return this.usuarioRepository.findOne({ where: { activationToken: token } });
+  }
+
+  async findByRecoveryToken(token: string): Promise<Usuario | null> {
+    return this.usuarioRepository.findOne({ where: { recoveryToken: token } });
+  }
 }

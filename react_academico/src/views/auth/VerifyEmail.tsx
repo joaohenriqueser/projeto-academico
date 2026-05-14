@@ -18,7 +18,7 @@ const VerifyEmail: React.FC = () => {
       }
 
       try {
-        await http.get(`/rest/auth/verify-email?token=${token}`);
+        await http.get(`/rest/auth/verify?token=${token}`);
         setStatus('success');
         toast.success('E-mail verificado com sucesso!');
         setTimeout(() => navigate('/login'), 5000);

@@ -3,8 +3,12 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const PrivateRoute: React.FC = () => {
-  // Mantemos o hook para não quebrar componentes que dependem dele, 
-  // mas liberamos o acesso direto conforme pedido (professor ensinará JWT depois).
+  const { isAuthenticated } = useAuth();
+  
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return <Outlet />;
 };
 

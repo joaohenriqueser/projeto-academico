@@ -66,7 +66,15 @@ export const routes: RouteObject[] = [
     element: <ResetPassword />,
   },
   {
+    path: "/auth/reset-password",
+    element: <ResetPassword />,
+  },
+  {
     path: "/verify-email",
+    element: <VerifyEmail />,
+  },
+  {
+    path: "/auth/verify",
     element: <VerifyEmail />,
   },
   {

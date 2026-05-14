@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { http } from "../../services/axios/config.axios";
 import { ROTA } from "../../services/router/url";
-import { FaSave, FaUserPlus } from "react-icons/fa";
-import { MdCancel } from "react-icons/md";
+import { FiUser, FiMail, FiLock, FiUserPlus, FiArrowLeft, FiCheckCircle, FiEye, FiEyeOff } from 'react-icons/fi';
+import { toast } from 'react-toastify';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -16,134 +16,318 @@ const Register = () => {
     confirmPassword: ''
   });
 
-  const [message, setMessage] = useState<{ text: string, type: 'error' | 'success' } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleChange = (value: string, name: string) => {
-    setFormData({ ...formData, [name]: value });
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = async () => {
-    if (!formData.firstName || !formData.username || !formData.email || !formData.password) {
-      setMessage({ text: "Por favor, preencha todos os campos obrigatórios (*)", type: 'error' });
-      return;
-    }
-
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
     if (formData.password !== formData.confirmPassword) {
-      setMessage({ text: "As senhas não coincidem!", type: 'error' });
+      toast.error("As senhas não coincidem!");
       return;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formData.email)) {
-      setMessage({ text: "Por favor, insira um e-mail válido!", type: 'error' });
-      return;
-    }
-
+    setLoading(true);
     try {
       await http.post(`/rest${ROTA.USUARIO.CRIAR}`, formData);
-      setMessage({ text: `Usuário ${formData.firstName} cadastrado com sucesso!`, type: 'success' });
-      setTimeout(() => navigate(ROTA.USUARIO.LISTAR), 2000);
+      setSuccess(true);
     } catch (error: any) {
       const msg = error.response?.data?.message || "Erro ao processar cadastro.";
-      setMessage({ text: msg, type: 'error' });
+      toast.error(msg);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="main-wrapper">
-      <div className="modern-card">
-        <div className="card-top-bar"></div>
-        <div className="card-body">
-          <h2 className="card-title">
-            <FaUserPlus style={{ color: 'var(--primary)' }} /> 
-            Novo Usuário
-          </h2>
-          
-          <div className="grid-row">
-            <div className="field-group">
-              <label>Primeiro Nome <span>*</span></label>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="Ex: João"
-                value={formData.firstName}
-                onChange={(e) => handleChange(e.target.value, 'firstName')}
-              />
-            </div>
-            <div className="field-group">
-              <label>Sobrenome <span>*</span></label>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="Ex: Silva"
-                value={formData.lastName}
-                onChange={(e) => handleChange(e.target.value, 'lastName')}
-              />
-            </div>
+    <div className="login-container">
+      {success ? (
+        <div className="login-box" style={{ maxWidth: '550px', textAlign: 'center' }}>
+          <FiCheckCircle style={{ fontSize: '72px', color: '#4CAF50', marginBottom: '20px' }} />
+          <h2 style={{ color: '#333', marginBottom: '15px', fontSize: '28px' }}>Cadastro Concluído!</h2>
+          <div style={{ backgroundColor: '#f0f9ff', border: '1px solid #b6e0fe', padding: '24px', borderRadius: '12px', marginBottom: '30px' }}>
+             <p style={{ color: '#0369a1', lineHeight: '1.6', margin: 0, fontSize: '16px' }}>
+               Enviamos um e-mail de ativação para <strong>{formData.email}</strong>.<br/><br/>
+               Por favor, verifique sua caixa de entrada e clique no link para ativar sua conta e poder acessar o sistema. Caso não o encontre, não se esqueça de verificar também a pasta de <strong>spam</strong>.
+             </p>
           </div>
-
-          <div className="grid-row">
-            <div className="field-group">
-              <label>Nome de Usuário <span>*</span></label>
-              <input
-                type="text"
-                className="input-field"
-                placeholder="joao.silva"
-                value={formData.username}
-                onChange={(e) => handleChange(e.target.value, 'username')}
-              />
-            </div>
-            <div className="field-group">
-              <label>E-mail <span>*</span></label>
-              <input
-                type="email"
-                className="input-field"
-                placeholder="email@exemplo.com"
-                value={formData.email}
-                onChange={(e) => handleChange(e.target.value, 'email')}
-              />
-            </div>
-          </div>
-
-          <div className="grid-row">
-            <div className="field-group">
-              <label>Senha <span>*</span></label>
-              <input
-                type="password"
-                className="input-field"
-                placeholder="••••••••"
-                value={formData.password}
-                onChange={(e) => handleChange(e.target.value, 'password')}
-              />
-            </div>
-            <div className="field-group">
-              <label>Confirmar Senha <span>*</span></label>
-              <input
-                type="password"
-                className="input-field"
-                placeholder="••••••••"
-                value={formData.confirmPassword}
-                onChange={(e) => handleChange(e.target.value, 'confirmPassword')}
-              />
-            </div>
-          </div>
-
-          {message && (
-            <div className={`alert-box ${message.type === 'error' ? 'alert-error' : 'alert-success'}`}>
-              {message.text}
-            </div>
-          )}
-
-          <div className="form-actions">
-            <button className="btn-base btn-secondary" onClick={() => navigate(ROTA.USUARIO.LISTAR)}>
-              <MdCancel size={18} /> Cancelar
-            </button>
-            <button className="btn-base btn-primary" onClick={handleSave}>
-              <FaSave size={18} /> Salvar Usuário
-            </button>
-          </div>
+          <Link to="/login" className="login-button" style={{ display: 'inline-block', textDecoration: 'none', padding: '14px 30px', width: 'auto', borderRadius: '8px' }}>
+            Ir para a página de Login
+          </Link>
         </div>
+      ) : (
+      <div className="login-box" style={{ maxWidth: '550px' }}>
+        <Link to="/login" className="back-link">
+          <FiArrowLeft /> Voltar para o login
+        </Link>
+        
+        <div className="login-header">
+          <h1>Crie sua Conta</h1>
+          <p>Preencha os dados abaixo para se cadastrar no sistema</p>
+        </div>
+        
+        <form onSubmit={handleSave}>
+          <div className="grid-row">
+            <div className="input-group">
+              <label htmlFor="firstName">Primeiro Nome</label>
+              <div className="input-wrapper">
+                <FiUser className="input-icon" />
+                <input
+                  id="firstName"
+                  name="firstName"
+                  type="text"
+                  placeholder="Ex: João"
+                  value={formData.firstName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="input-group">
+              <label htmlFor="lastName">Sobrenome</label>
+              <div className="input-wrapper">
+                <FiUser className="input-icon" />
+                <input
+                  id="lastName"
+                  name="lastName"
+                  type="text"
+                  placeholder="Ex: Silva"
+                  value={formData.lastName}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid-row">
+            <div className="input-group">
+              <label htmlFor="username">Usuário</label>
+              <div className="input-wrapper">
+                <FiUserPlus className="input-icon" />
+                <input
+                  id="username"
+                  name="username"
+                  type="text"
+                  placeholder="joao.silva"
+                  value={formData.username}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+            <div className="input-group">
+              <label htmlFor="email">E-mail</label>
+              <div className="input-wrapper">
+                <FiMail className="input-icon" />
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="email@exemplo.com"
+                  value={formData.email}
+                  onChange={handleChange}
+                  required
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="grid-row">
+            <div className="input-group">
+              <label htmlFor="password">Senha</label>
+              <div className="input-wrapper">
+                <FiLock className="input-icon" />
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                >
+                  {showPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+            <div className="input-group">
+              <label htmlFor="confirmPassword">Confirmar Senha</label>
+              <div className="input-wrapper">
+                <FiLock className="input-icon" />
+                <input
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  required
+                />
+                <button
+                  type="button"
+                  className="password-toggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex={-1}
+                >
+                  {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" className="login-button" disabled={loading} style={{ marginTop: '10px' }}>
+            {loading ? 'Cadastrando...' : 'Criar minha conta'}
+          </button>
+        </form>
       </div>
+      )}
+
+      <style>{`
+        .login-container {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          min-height: 100vh;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          padding: 20px;
+          font-family: 'Inter', sans-serif;
+        }
+        .login-box {
+          background: white;
+          padding: 40px;
+          border-radius: 16px;
+          box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+          width: 100%;
+        }
+        .back-link {
+          display: flex;
+          align-items: center;
+          gap: 5px;
+          color: #667eea;
+          text-decoration: none;
+          font-size: 14px;
+          margin-bottom: 20px;
+          transition: color 0.2s;
+        }
+        .back-link:hover {
+          color: #5a6fd6;
+        }
+        .login-header {
+          text-align: center;
+          margin-bottom: 30px;
+        }
+        .login-header h1 {
+          color: #333;
+          font-size: 24px;
+          margin-bottom: 8px;
+        }
+        .login-header p {
+          color: #666;
+          font-size: 14px;
+        }
+        .grid-row {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 20px;
+          margin-bottom: 5px;
+        }
+        @media (max-width: 600px) {
+          .grid-row {
+            grid-template-columns: 1fr;
+            gap: 0;
+          }
+        }
+        .input-group {
+          margin-bottom: 20px;
+        }
+        .input-group label {
+          display: block;
+          margin-bottom: 8px;
+          color: #444;
+          font-weight: 500;
+          font-size: 14px;
+        }
+        .input-wrapper {
+          position: relative;
+          display: flex;
+          align-items: center;
+        }
+        .input-icon {
+          position: absolute;
+          left: 12px;
+          color: #888;
+        }
+        input {
+          width: 100%;
+          padding: 12px 12px 12px 40px;
+          border: 1px solid #ddd;
+          border-radius: 8px;
+          font-size: 15px;
+          transition: all 0.2s;
+        }
+        input:focus {
+          border-color: #667eea;
+          box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+          outline: none;
+        }
+        input::-ms-reveal,
+        input::-ms-clear {
+          display: none;
+        }
+        .password-toggle {
+          position: absolute;
+          right: 12px;
+          background: none;
+          border: none;
+          color: #888;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          font-size: 18px;
+          transition: color 0.2s;
+        }
+        .password-toggle:hover {
+          color: #667eea;
+        }
+        input[type="password"], 
+        input[type="text"] {
+          padding-right: 40px;
+        }
+        .login-button {
+          width: 100%;
+          padding: 14px;
+          background: #667eea;
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-size: 16px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+        .login-button:hover {
+          background: #5a6fd6;
+        }
+        .login-button:disabled {
+          background: #aab7f1;
+          cursor: not-allowed;
+        }
+      `}</style>
     </div>
   );
 };

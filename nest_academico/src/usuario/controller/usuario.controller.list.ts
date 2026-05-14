@@ -11,11 +11,15 @@ import { UsuarioServiceList } from '../service/usuario.service.list';
 import { Page } from '../../commons/pagination/page.sistema';
 import { PAGINATION } from '../../commons/enum/paginacao.enum';
 
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { UseGuards } from '@nestjs/common';
+
 @ApiTags('Usuário')
 @Controller(ROTA.USUARIO.BASE)
 export class UsuarioControllerList {
   constructor(private readonly usuarioServiceList: UsuarioServiceList) {}
 
+  @UseGuards(JwtAuthGuard)
   @HttpCode(HttpStatus.OK)
   @Get(ROTA.USUARIO.LIST)
   async list(

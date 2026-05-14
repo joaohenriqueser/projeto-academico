@@ -5,12 +5,14 @@ import { Usuario } from '../entities/usuario.entity';
 import { UsuarioRequest } from '../dto/request/usuario.request';
 import { UsuarioResponse } from '../dto/response/usuario.response';
 import * as bcrypt from 'bcrypt';
+import { MailService } from '../../mail/mail.service';
 
 @Injectable()
 export class UsuarioServiceCreate {
   constructor(
     @InjectRepository(Usuario)
     private readonly usuarioRepository: Repository<Usuario>,
+    private readonly mailService: MailService,
   ) {}
 
   async create(request: UsuarioRequest): Promise<UsuarioResponse> {
@@ -42,13 +44,25 @@ export class UsuarioServiceCreate {
       const salt = await bcrypt.genSalt();
       const hashedPassword = await bcrypt.hash(request.password, salt);
       
+      const activationToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      
       const newUsuario = this.usuarioRepository.create({
         ...request,
         password: hashedPassword,
+        status: 'PENDING',
+        activationToken,
       });
 
       const savedUsuario = await this.usuarioRepository.save(newUsuario);
       console.log('Usuário salvo com sucesso no banco:', savedUsuario.idUsuario);
+
+      try {
+        await this.mailService.sendUserConfirmation(savedUsuario, activationToken);
+      } catch (mailError) {
+        console.error('Falha ao enviar e-mail de confirmação:', mailError);
+        // Note: we might want to continue even if email fails, or roll back. 
+        // For now, we'll just log it.
+      }
       
       const response = new UsuarioResponse(savedUsuario);
       return response;

@@ -6,9 +6,10 @@ import { UsuarioServiceCreate } from './service/usuario.service.create';
 import { UsuarioControllerList } from './controller/usuario.controller.list';
 import { UsuarioServiceList } from './service/usuario.service.list';
 import { UsuarioServiceFind } from './service/usuario.service.find';
+import { MailModule } from '../mail/mail.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Usuario])],
+  imports: [TypeOrmModule.forFeature([Usuario]), MailModule],
   controllers: [UsuarioControllerCreate, UsuarioControllerList],
   providers: [UsuarioServiceCreate, UsuarioServiceList, UsuarioServiceFind],
   exports: [UsuarioServiceCreate, UsuarioServiceList, UsuarioServiceFind],

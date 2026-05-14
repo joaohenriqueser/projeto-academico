@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { http } from '../../services/axios/config.axios';
 import { toast } from 'react-toastify';
-import { FiLock } from 'react-icons/fi';
+import { FiLock, FiEye, FiEyeOff } from 'react-icons/fi';
 
 const ResetPassword: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const token = searchParams.get('token');
@@ -26,7 +28,7 @@ const ResetPassword: React.FC = () => {
 
     setLoading(true);
     try {
-      await http.post('/rest/auth/reset-password', { token, password });
+      await http.post('/rest/auth/reset-password', { token, newPassword: password });
       toast.success('Senha redefinida com sucesso! Faça login para continuar.');
       navigate('/login');
     } catch (error: any) {
@@ -47,32 +49,48 @@ const ResetPassword: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <div className="input-group">
             <label htmlFor="password">Nova Senha</label>
-            <div className="input-wrapper">
-              <FiLock className="input-icon" />
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
+             <div className="input-wrapper">
+               <FiLock className="input-icon" />
+               <input
+                 id="password"
+                 type={showPassword ? "text" : "password"}
+                 value={password}
+                 onChange={(e) => setPassword(e.target.value)}
+                 placeholder="••••••••"
+                 required
+               />
+               <button
+                 type="button"
+                 className="password-toggle"
+                 onClick={() => setShowPassword(!showPassword)}
+                 tabIndex={-1}
+               >
+                 {showPassword ? <FiEyeOff /> : <FiEye />}
+               </button>
+             </div>
           </div>
 
           <div className="input-group">
             <label htmlFor="confirmPassword">Confirmar Nova Senha</label>
-            <div className="input-wrapper">
-              <FiLock className="input-icon" />
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="••••••••"
-                required
-              />
-            </div>
+             <div className="input-wrapper">
+               <FiLock className="input-icon" />
+               <input
+                 id="confirmPassword"
+                 type={showConfirmPassword ? "text" : "password"}
+                 value={confirmPassword}
+                 onChange={(e) => setConfirmPassword(e.target.value)}
+                 placeholder="••••••••"
+                 required
+               />
+               <button
+                 type="button"
+                 className="password-toggle"
+                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                 tabIndex={-1}
+               >
+                 {showConfirmPassword ? <FiEyeOff /> : <FiEye />}
+               </button>
+             </div>
           </div>
 
           <button type="submit" className="login-button" disabled={loading}>
@@ -142,6 +160,31 @@ const ResetPassword: React.FC = () => {
         input:focus {
           border-color: #667eea;
           outline: none;
+        }
+        input::-ms-reveal,
+        input::-ms-clear {
+          display: none;
+        }
+        .password-toggle {
+          position: absolute;
+          right: 12px;
+          background: none;
+          border: none;
+          color: #888;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0;
+          font-size: 18px;
+          transition: color 0.2s;
+        }
+        .password-toggle:hover {
+          color: #667eea;
+        }
+        input[type="password"], 
+        input[type="text"] {
+          padding-right: 40px;
         }
         .login-button {
           width: 100%;

@@ -37,6 +37,10 @@ export class Usuario extends BaseEntity {
   @Column({ name: 'TOKEN_EXPIRES', type: 'timestamp', nullable: true })
   tokenExpires?: Date;
 
+  @Column({ name: 'USED_AT', type: 'timestamp', nullable: true })
+  usedAt?: Date;
+
+
   @OneToMany(() => UsuarioRole, (ur) => ur.usuario)
   usuarioRoles?: UsuarioRole[];
 

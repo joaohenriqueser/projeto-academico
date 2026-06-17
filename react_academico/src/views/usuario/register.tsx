@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { http } from "../../services/axios/config.axios";
 import { ROTA } from "../../services/router/url";
-import { FiUser, FiMail, FiLock, FiUserPlus, FiArrowLeft, FiCheckCircle, FiEye, FiEyeOff } from 'react-icons/fi';
+import { FiUser, FiMail, FiLock, FiUserPlus, FiArrowLeft, FiCheckCircle, FiEye, FiEyeOff, FiCheck, FiX } from 'react-icons/fi';
 import { toast } from 'react-toastify';
 
 const Register = () => {
@@ -21,6 +21,13 @@ const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Live validation checks
+  const hasMinLength = formData.password.length >= 6;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>_]/.test(formData.password);
+  const passwordsMatch = formData.password.length > 0 && formData.password === formData.confirmPassword;
+  
+  const isFormValid = hasMinLength && hasSpecialChar && passwordsMatch && formData.firstName && formData.lastName && formData.username && formData.email;
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -38,7 +45,7 @@ const Register = () => {
       await http.post(`/rest${ROTA.USUARIO.CRIAR}`, formData);
       setSuccess(true);
     } catch (error: any) {
-      const msg = error.response?.data?.message || "Erro ao processar cadastro.";
+      const msg = error.response?.data?.mensagem || error.response?.data?.message || "Erro ao processar cadastro.";
       toast.error(msg);
     } finally {
       setLoading(false);
@@ -188,7 +195,26 @@ const Register = () => {
             </div>
           </div>
 
-          <button type="submit" className="login-button" disabled={loading} style={{ marginTop: '10px' }}>
+          {/* Live validation checklist */}
+          <div className="validation-checklist" style={{ marginBottom: '20px' }}>
+            <p className="checklist-title">Requisitos da senha:</p>
+            <ul>
+              <li className={hasMinLength ? 'valid' : 'invalid'}>
+                {hasMinLength ? <FiCheck className="check-icon" /> : <FiX className="x-icon" />}
+                <span>Pelo menos 6 caracteres</span>
+              </li>
+              <li className={hasSpecialChar ? 'valid' : 'invalid'}>
+                {hasSpecialChar ? <FiCheck className="check-icon" /> : <FiX className="x-icon" />}
+                <span>Pelo menos um caractere especial (ex: @, #, $, %)</span>
+              </li>
+              <li className={passwordsMatch ? 'valid' : 'invalid'}>
+                {passwordsMatch ? <FiCheck className="check-icon" /> : <FiX className="x-icon" />}
+                <span>As senhas coincidem</span>
+              </li>
+            </ul>
+          </div>
+
+          <button type="submit" className="login-button" disabled={loading || !isFormValid} style={{ marginTop: '10px' }}>
             {loading ? 'Cadastrando...' : 'Criar minha conta'}
           </button>
         </form>
@@ -326,6 +352,44 @@ const Register = () => {
         .login-button:disabled {
           background: #aab7f1;
           cursor: not-allowed;
+        }
+        .validation-checklist {
+          background-color: #f7fafc;
+          border: 1px solid #edf2f7;
+          border-radius: 8px;
+          padding: 12px 16px;
+          font-size: 13px;
+          color: #4a5568;
+        }
+        .checklist-title {
+          font-weight: 600;
+          margin-top: 0;
+          margin-bottom: 8px;
+        }
+        .validation-checklist ul {
+          list-style: none;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+        }
+        .validation-checklist li {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .validation-checklist li.valid {
+          color: #2f855a;
+        }
+        .validation-checklist li.invalid {
+          color: #a0aec0;
+        }
+        .check-icon {
+          color: #48bb78;
+        }
+        .x-icon {
+          color: #cbd5e0;
         }
       `}</style>
     </div>

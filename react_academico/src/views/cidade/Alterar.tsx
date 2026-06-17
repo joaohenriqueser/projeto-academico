@@ -1,7 +1,6 @@
 import { FaSave, FaCity } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { useAlterar } from "../../services/cidade/hook/useAlterar";
-import { useResources } from "../../services/providers/ResourcesProviders";
 import React from "react";
 import { CIDADE } from "../../services/cidade/constants/cidade.constants";
 
@@ -14,13 +13,6 @@ export default function AlterarCidade() {
     onSubmitForm,
     handleCancel,
   } = useAlterar();
-  
-  const id = 1; // ID should probably come from params but keeping existing logic structure
-  const { getEndpoint } = useResources();
-  
-  let url = React.useMemo(() => {
-    return getEndpoint('cidade', id);
-  }, [getEndpoint, id]);
 
   return (
     <div className="main-wrapper">
@@ -32,7 +24,7 @@ export default function AlterarCidade() {
             Alterar Cidade
           </h2>
           
-          <form onSubmit={(e) => onSubmitForm(e, url!)}>
+          <form onSubmit={onSubmitForm}>
             <div className="grid-row">
               <div className="field-group">
                 <label>{CIDADE.LABEL.CODIGO} <span>*</span></label>

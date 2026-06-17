@@ -34,7 +34,7 @@ const Login: React.FC = () => {
       navigate('/sistema/dashboard', { replace: true });
     } catch (error: any) {
       console.error('Erro no login:', error);
-      const message = error.response?.data?.message || error.message || 'Erro ao realizar login.';
+      const message = error.response?.data?.mensagem || error.response?.data?.message || error.message || 'Erro ao realizar login.';
       toast.error(message);
     } finally {
       setLoading(false);

@@ -14,22 +14,32 @@ export class LoginDto {
   password!: string;
 }
 
-export class ForgotPasswordDto {
+export class ForgotPasswordRequest {
   @ApiProperty({ example: 'usuario@exemplo.com' })
   @IsEmail({}, { message: 'E-mail inválido' })
   @IsNotEmpty({ message: 'O e-mail é obrigatório' })
   email!: string;
 }
 
-export class ResetPasswordDto {
+export class ResetPasswordRequest {
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'O token é obrigatório' })
   token!: string;
 
   @ApiProperty()
   @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'A nova senha é obrigatória' })
   @MinLength(6, { message: 'A nova senha deve ter pelo menos 6 caracteres' })
-  newPassword!: string;
+  password!: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsNotEmpty({ message: 'A confirmação de senha é obrigatória' })
+  confirmPassword!: string;
 }
+
+// Keep aliases for backward compatibility if any references exist
+export { ForgotPasswordRequest as ForgotPasswordDto };
+export { ResetPasswordRequest as ResetPasswordDto };
+

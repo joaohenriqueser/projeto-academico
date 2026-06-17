@@ -1,6 +1,6 @@
 import { ALUNO, CIDADE, PROFESSOR, USUARIO, DISCIPLINA, AVALIACAO, ROLE, RECURSO, PERMISSION } from './constants.sistema';
 
-export const SERVIDOR = 'http://localhost:5000';
+export const SERVIDOR = 'http://localhost:5050';
 export const CLINTE = 'http://localhost:3000';
 
 export const ROTA_SISTEMA = 'rest/sistema';

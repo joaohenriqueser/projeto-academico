@@ -7,17 +7,17 @@ import { FiMail, FiArrowLeft } from 'react-icons/fi';
 const ForgotPassword: React.FC = () => {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
       await http.post('/rest/auth/forgot-password', { email });
-      toast.success('E-mail de recuperação enviado com sucesso!');
-      navigate('/login');
+      toast.success('Solicitação processada com sucesso!');
+      setIsSubmitted(true);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Erro ao processar solicitação.');
+      toast.error(error.response?.data?.mensagem || error.response?.data?.message || 'Erro ao processar solicitação.');
     } finally {
       setLoading(false);
     }
@@ -26,34 +26,61 @@ const ForgotPassword: React.FC = () => {
   return (
     <div className="login-container">
       <div className="login-box">
-        <Link to="/login" className="back-link">
-          <FiArrowLeft /> Voltar para o login
-        </Link>
-        <div className="login-header">
-          <h1>Recuperar Senha</h1>
-          <p>Informe seu e-mail para receber as instruções</p>
-        </div>
-        
-        <form onSubmit={handleSubmit}>
-          <div className="input-group">
-            <label htmlFor="email">E-mail</label>
-            <div className="input-wrapper">
-              <FiMail className="input-icon" />
-              <input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="seu@email.com"
-                required
-              />
+        {isSubmitted ? (
+          <div className="success-view">
+            <div className="success-icon-wrapper">
+              <FiMail className="success-icon-large" />
             </div>
+            <div className="login-header">
+              <h1>Verifique seu E-mail</h1>
+              <p>
+                Se o e-mail <strong>{email}</strong> estiver cadastrado em nosso sistema, você receberá um link contendo instruções para redefinir sua senha em instantes.
+              </p>
+            </div>
+            <div className="success-instructions">
+              <p>Por favor, verifique:</p>
+              <ul>
+                <li>Sua caixa de entrada principal.</li>
+                <li>As pastas de Spam ou Lixo eletrônico.</li>
+                <li>O link enviado expira em 15 minutos.</li>
+              </ul>
+            </div>
+            <Link to="/login" className="back-link" style={{ justifyContent: 'center', marginTop: '24px', marginBottom: 0 }}>
+              <FiArrowLeft /> Voltar para o login
+            </Link>
           </div>
+        ) : (
+          <>
+            <Link to="/login" className="back-link">
+              <FiArrowLeft /> Voltar para o login
+            </Link>
+            <div className="login-header">
+              <h1>Recuperar Senha</h1>
+              <p>Informe seu e-mail para receber as instruções</p>
+            </div>
+            
+            <form onSubmit={handleSubmit}>
+              <div className="input-group">
+                <label htmlFor="email">E-mail</label>
+                <div className="input-wrapper">
+                  <FiMail className="input-icon" />
+                  <input
+                    id="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="seu@email.com"
+                    required
+                  />
+                </div>
+              </div>
 
-          <button type="submit" className="login-button" disabled={loading}>
-            {loading ? 'Enviando...' : 'Enviar Link de Recuperação'}
-          </button>
-        </form>
+              <button type="submit" className="login-button" disabled={loading}>
+                {loading ? 'Enviando...' : 'Enviar Link de Recuperação'}
+              </button>
+            </form>
+          </>
+        )}
       </div>
 
       <style>{`
@@ -94,6 +121,7 @@ const ForgotPassword: React.FC = () => {
         .login-header p {
           color: #666;
           font-size: 14px;
+          line-height: 1.5;
         }
         .input-group {
           margin-bottom: 20px;
@@ -145,6 +173,46 @@ const ForgotPassword: React.FC = () => {
         .login-button:disabled {
           background: #aab7f1;
           cursor: not-allowed;
+        }
+        .success-view {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+        .success-icon-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 70px;
+          height: 70px;
+          background-color: #ebf8ff;
+          border-radius: 50%;
+          margin-bottom: 24px;
+        }
+        .success-icon-large {
+          font-size: 32px;
+          color: #3182ce;
+        }
+        .success-instructions {
+          background-color: #f7fafc;
+          border-radius: 8px;
+          padding: 16px;
+          width: 100%;
+          font-size: 13px;
+          color: #4a5568;
+          border: 1px solid #edf2f7;
+        }
+        .success-instructions p {
+          font-weight: 600;
+          margin-top: 0;
+          margin-bottom: 8px;
+        }
+        .success-instructions ul {
+          margin: 0;
+          padding-left: 20px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
         }
       `}</style>
     </div>

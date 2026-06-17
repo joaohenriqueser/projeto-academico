@@ -4,6 +4,8 @@ import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { MailService } from '../mail/mail.service';
 import { MoreThan } from 'typeorm';
+import * as crypto from 'crypto';
+
 
 @Injectable()
 export class AuthService {
@@ -41,31 +43,51 @@ export class AuthService {
   async forgotPassword(email: string) {
     const user = await this.usuarioService.findByEmail(email);
     if (!user) {
-      // For security, don't reveal if user exists
-      return { message: 'Se o e-mail existir, um link de recuperação será enviado.' };
+      // For security, return same message so user existence is not leaked
+      return { message: 'Se o e-mail informado estiver cadastrado, um link de redefinição de senha será enviado.' };
     }
 
-    const token = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-    user.recoveryToken = token;
-    user.tokenExpires = new Date(Date.now() + 3600000); // 1 hour TTL
+    // Generate secure random token (64 hex characters)
+    const token = crypto.randomBytes(32).toString('hex');
+    
+    // Hash the token to save in database
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    
+    user.recoveryToken = hashedToken;
+    user.tokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes validity
+    user.usedAt = undefined; // reset if previously used
     await this.usuarioService.save(user);
 
+    // Send email with plaintext token
     await this.mailService.sendForgotPassword(user, token);
 
-    return { message: 'E-mail de recuperação enviado com sucesso.' };
+    return { message: 'Se o e-mail informado estiver cadastrado, um link de redefinição de senha será enviado.' };
   }
 
-  async resetPassword(token: string, newPass: string) {
-    const user = await this.usuarioService.findByRecoveryToken(token);
+  async resetPassword(token: string, newPass: string, confirmPass: string) {
+    if (newPass !== confirmPass) {
+      throw new BadRequestException('A senha e a confirmação de senha não coincidem.');
+    }
+
+    // Hash the received token to query database
+    const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await this.usuarioService.findByRecoveryToken(hashedToken);
     
-    if (!user || !user.tokenExpires || user.tokenExpires < new Date()) {
-      throw new BadRequestException('Token inválido ou expirado.');
+    if (!user) {
+      throw new BadRequestException('Token de recuperação inválido.');
+    }
+
+    if (user.usedAt) {
+      throw new BadRequestException('Este token de recuperação já foi utilizado.');
+    }
+
+    if (!user.tokenExpires || user.tokenExpires < new Date()) {
+      throw new BadRequestException('Este token de recuperação expirou.');
     }
 
     const salt = await bcrypt.genSalt();
     user.password = await bcrypt.hash(newPass, salt);
-    user.recoveryToken = undefined;
-    user.tokenExpires = undefined;
+    user.usedAt = new Date(); // Invalidate token by marking usedAt
     
     await this.usuarioService.save(user);
 

@@ -1,9 +1,13 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ROTA } from "../../router/url";
+import { toast } from "react-toastify";
 import { apiPostCidade } from "../api/api.cidade";
 import { CIDADE } from "../constants/cidade.constants";
 import type { Cidade, ErrosCidade } from "../type/Cidade";
 
 export const useCriar = () => {
+  const navigate = useNavigate();
   const [model, setModel] = useState<Cidade>(CIDADE.DADOS_INCIAIS);
 
   const [errors, setErrors] = useState<ErrosCidade>({});
@@ -107,10 +111,14 @@ export const useCriar = () => {
     }
 
     try {
-      const response = apiPostCidade(model);
+      const response = await apiPostCidade(model);
       console.log(response);
+      toast.success("Cidade cadastrada com sucesso!");
+      navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
+      const msg = error.response?.data?.mensagem || error.response?.data?.message || "Erro ao criar cidade.";
+      toast.error(msg);
     }
   };
 

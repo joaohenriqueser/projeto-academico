@@ -1,99 +1,103 @@
 import { useEffect, useState } from "react";
-import { FaSave } from "react-icons/fa";
+import { FaTrash, FaCity } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   apiDeleteCidade,
   apiGetCidade,
 } from "../../services/cidade/api/api.cidade";
 import type { Cidade } from "../../services/cidade/type/Cidade";
+import { ROTA } from "../../services/router/url";
 
 export default function ExcluirCidade() {
   const { idCidade } = useParams<{ idCidade: string }>();
+  const navigate = useNavigate();
   const [model, setModel] = useState<Cidade | null>(null);
+  const [loading, setLoading] = useState(true);
 
-   
-
-  const onSubmitForm = async (e: any) => {
-    // não deixa executar o processo normal
-    e.preventDefault();
-
-    if (!idCidade || !model) {
-      return;
+  useEffect(() => {
+    async function loadData() {
+      if (!idCidade) return;
+      try {
+        setLoading(true);
+        const res = await apiGetCidade(idCidade);
+        if (res.data && res.data.dados) {
+          setModel(res.data.dados);
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Erro ao carregar dados da cidade.");
+      } finally {
+        setLoading(false);
+      }
     }
+    loadData();
+  }, [idCidade]);
+
+  const handleDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!idCidade) return;
 
     try {
-      const response = apiDeleteCidade(idCidade);
-      console.log(response);
+      await apiDeleteCidade(idCidade);
+      toast.success("Cidade excluída com sucesso!");
+      navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
+      const msg = error.response?.data?.mensagem || error.response?.data?.message || "Erro ao excluir cidade.";
+      toast.error(msg);
     }
   };
 
-  const getInputClass = () => {
-    return "form-control app-label mt-2";
-  };
+  if (loading) {
+    return (
+      <div className="main-wrapper">
+        <div className="modern-card" style={{ textAlign: "center", padding: "3rem" }}>
+          Carregando dados da cidade...
+        </div>
+      </div>
+    );
+  }
+
+  if (!model) {
+    return (
+      <div className="main-wrapper">
+        <div className="modern-card" style={{ textAlign: "center", padding: "3rem" }}>
+          <p>Cidade não encontrada.</p>
+          <button className="btn-base btn-secondary" onClick={() => navigate(ROTA.CIDADE.LISTAR)}>
+            Voltar para a lista
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="display">
-      <div className="card animated fadeInDown">
-        <h2>Excluir Cidade</h2>
-        <form onSubmit={(e) => onSubmitForm(e)}>
-          <div className="mb-2 mt-4">
-            <label htmlFor="codCidade" className="app-label">
-              Código:
-            </label>
-            <input
-              id="codCidade"
-              name="codCidade"
-              defaultValue={model?.codCidade}
-              className={getInputClass()}
-              readOnly={false}
-              disabled={false}
-            />
-          </div>
-          <div className="mb-2 mt-4">
-            <label htmlFor="nomeCidade" className="app-label">
-              Nome:
-            </label>
-            <input
-              id="nomeCidade"
-              name="nomeCidade"
-              defaultValue={model?.nomeCidade}
-              className={getInputClass()}
-              readOnly={false}
-              disabled={false}
-            />
-          </div>
-          <div className="btn-content mt-4">
-            <button
-              id="submit"
-              type="submit"
-              className="btn btn-success"
-              title="Cadastrar uma nova cidade"
-            >
-              <span className="btn-icon">
-                <i>
-                  <FaSave />
-                </i>
-              </span>
-              Salvar
-            </button>
-            <button
-              id="cancel"
-              type="button"
-              className="btn btn-cancel"
-              title="Cancelar o Cadastro da cidade"
-            >
-              <span className="btn-icon">
-                <i>
-                  <MdCancel />
-                </i>
-              </span>
-              Cancelar
-            </button>
-          </div>
-        </form>
+    <div className="main-wrapper">
+      <div className="modern-card">
+        <div className="card-top-bar" style={{ background: '#ef4444' }}></div>
+        <div className="card-body">
+          <h2 className="card-title" style={{ color: '#ef4444' }}>
+            <FaCity /> 
+            Excluir Cidade
+          </h2>
+          
+          <form onSubmit={handleDelete}>
+            <p style={{ fontSize: '1.1rem', marginBottom: '1.5rem', color: '#4b5563' }}>
+              Tem certeza que deseja excluir a cidade <strong>{model.nomeCidade}</strong> (Código IBGE: {model.codCidade})?
+            </p>
+
+            <div className="form-actions">
+              <button type="button" className="btn-base btn-secondary" onClick={() => navigate(ROTA.CIDADE.LISTAR)}>
+                <MdCancel size={18} /> Cancelar
+              </button>
+              <button type="submit" className="btn-base btn-primary" style={{ background: '#ef4444' }}>
+                <FaTrash size={18} /> Excluir Cidade
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );

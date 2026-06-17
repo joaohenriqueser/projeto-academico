@@ -1,19 +1,13 @@
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FaSave, FaStar } from "react-icons/fa";
 import { MdCancel } from "react-icons/md";
 import { apiGetAvaliacaoById, apiUpdateAvaliacao } from '../../services/avaliacao/api/api.avaliacao';
-import { useResources } from '../../services/providers/ResourcesProviders';
 import { ROTA } from '../../services/router/url';
 
 export default function AlterarAvaliacao() {
   const { idAvaliacao } = useParams();
   const navigate = useNavigate();
-  const { getEndpoint } = useResources();
-  
-  const url = useMemo(() => {
-    return getEndpoint('avaliacao');
-  }, [getEndpoint]);
 
   const [model, setModel] = useState({
     descricao: '',
@@ -22,9 +16,9 @@ export default function AlterarAvaliacao() {
 
   useEffect(() => {
     async function loadData() {
-      if (idAvaliacao && url) {
+      if (idAvaliacao) {
         try {
-          const res = await apiGetAvaliacaoById(Number(idAvaliacao), url);
+          const res = await apiGetAvaliacaoById(Number(idAvaliacao));
           if (res.data && res.data.dados) {
             setModel(res.data.dados);
           }
@@ -34,16 +28,12 @@ export default function AlterarAvaliacao() {
       }
     }
     loadData();
-  }, [idAvaliacao, url]);
+  }, [idAvaliacao]);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url) {
-      alert('Recursos da API não carregados.');
-      return;
-    }
     try {
-      await apiUpdateAvaliacao(Number(idAvaliacao), model, url);
+      await apiUpdateAvaliacao(Number(idAvaliacao), model);
       navigate(ROTA.AVALIACAO.LISTAR);
     } catch (error) {
       console.error(error);
@@ -54,10 +44,6 @@ export default function AlterarAvaliacao() {
   const handleInputChange = (value: string | number, name: string) => {
     setModel({ ...model, [name]: name === 'disciplinaId' ? Number(value) : value });
   };
-
-  if (!url) {
-    return <div className="list-container" style={{ textAlign: 'center', padding: '5rem' }}>Carregando recursos...</div>;
-  }
 
   return (
     <div className="main-wrapper">

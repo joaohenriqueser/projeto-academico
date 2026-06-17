@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ROTA } from "../../router/url";
+import { toast } from "react-toastify";
 import { apiGetCidade, apiPutCidade } from "../api/api.cidade";
 import {
   CIDADE,
@@ -198,7 +199,7 @@ export const useAlterar = () => {
     return "form-control app-label mt-2";
   };
 
-  const onSubmitForm = async (e: React.FormEvent, url: string) => {
+  const onSubmitForm = async (e: React.FormEvent) => {
     // não deixa executar o processo normal
     e.preventDefault();
 
@@ -212,11 +213,14 @@ export const useAlterar = () => {
     }
 
     try {
-      const response = apiPutCidade(idCidade, model, url);
+      const response = await apiPutCidade(idCidade, model);
       console.log(response);
+      toast.success("Cidade atualizada com sucesso!");
       navigate(ROTA.CIDADE.LISTAR);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
+      const msg = error.response?.data?.mensagem || error.response?.data?.message || "Erro ao atualizar cidade.";
+      toast.error(msg);
     }
   };
 

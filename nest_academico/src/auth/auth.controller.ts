@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, Query, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
-import { LoginDto, ForgotPasswordDto, ResetPasswordDto } from './dto/auth.dto';
+import { LoginDto, ForgotPasswordRequest, ResetPasswordRequest } from './dto/auth.dto';
 
 @ApiTags('autenticacao')
 @Controller('rest/auth')
@@ -26,13 +26,18 @@ export class AuthController {
 
   @Post('forgot-password')
   @ApiOperation({ summary: 'Solicita recuperação de senha' })
-  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
-    return this.authService.forgotPassword(forgotPasswordDto.email);
+  async forgotPassword(@Body() forgotPasswordRequest: ForgotPasswordRequest) {
+    return this.authService.forgotPassword(forgotPasswordRequest.email);
   }
 
   @Post('reset-password')
   @ApiOperation({ summary: 'Redefine a senha via token' })
-  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
-    return this.authService.resetPassword(resetPasswordDto.token, resetPasswordDto.newPassword);
+  async resetPassword(@Body() resetPasswordRequest: ResetPasswordRequest) {
+    return this.authService.resetPassword(
+      resetPasswordRequest.token,
+      resetPasswordRequest.password,
+      resetPasswordRequest.confirmPassword,
+    );
   }
+
 }
